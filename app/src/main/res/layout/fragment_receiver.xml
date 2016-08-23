@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/rounded_rectangle_button">
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Member name:"
+            android:textStyle="bold"
+            android:id="@+id/txtName"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:textColor="#ffffff"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="Alex"
+            android:ems="10"
+            android:id="@+id/editName"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/txtName"
+            android:layout_alignLeft="@+id/txtName"
+            android:layout_alignStart="@+id/txtName"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:textColor="#ffffff"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Member e-mail:"
+            android:textStyle="bold"
+            android:id="@+id/txtEmail"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/editName"
+            android:layout_alignLeft="@+id/editName"
+            android:layout_alignStart="@+id/editName"
+            android:textColor="#ffffff"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="santa@example.com"
+            android:ems="10"
+            android:id="@+id/editEmail"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/txtEmail"
+            android:layout_alignLeft="@+id/txtEmail"
+            android:layout_alignStart="@+id/txtEmail"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:textColor="#ffffff"/>
+
+</RelativeLayout>

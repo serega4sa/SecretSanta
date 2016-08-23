@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Secret Santa</string>
+    <string name="btn_start">Start</string>
+    <string name="img_logo">logo</string>
+</resources>
