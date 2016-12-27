@@ -1,36 +1,35 @@
 package com.sergeychmihun.secretsanta.activity;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.*;
 import com.sergeychmihun.secretsanta.R;
-import com.sergeychmihun.secretsanta.fragment.ReceiverInfoFragment;
+import com.sergeychmihun.secretsanta.fragment.ProcessingFragment;
 import com.sergeychmihun.secretsanta.fragment.ReceiversInfoContainerFragment;
 import com.sergeychmihun.secretsanta.fragment.StartFragment;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Properties;
+import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity {
 
     private FragmentManager manager;
     private FragmentTransaction transaction;
     private ReceiversInfoContainerFragment receiversContainerFragment;
-    private ImageView imgDone;
+    private ProcessingFragment processingFragment;
+    private ImageView imgDeer;
+    private ImageView imgReturnArrow;
+    private Button returnBtn;
     private ProgressBar progressBar;
-    private int numberOfMembers;
+    private TextView statusOfProcessing;
+    private int numberOfMembers = 0;
+    private ArrayList<ReceiverInfo> receiversArray;
+    private CustomListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,95 +37,148 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         receiversContainerFragment = new ReceiversInfoContainerFragment();
+        processingFragment = new ProcessingFragment();
         manager = getSupportFragmentManager();
-
-        //progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        //imgDone = (ImageView) findViewById(R.id.imgDone);
 
         initFragmentStart();
     }
 
-    private void initFragmentStart() {
-        transaction = manager.beginTransaction();
-        transaction.add(R.id.container, new StartFragment());
-        transaction.commit();
-    }
-
+    /** This method perform switching to next page after clicking on the 'Start' button. By default creates 3 receiver objects (minimum requirement)*/
     public void onClickButtonStart(View v) {
-        transaction = manager.beginTransaction();
+        transaction = getSupportFragmentManager().beginTransaction();
         //transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);  /* Animation of fragment. Doesn't work on API <21 */
         transaction.replace(R.id.container, receiversContainerFragment, ReceiversInfoContainerFragment.TAG);
-        transaction.add(R.id.mainContainer, new ReceiverInfoFragment());
-        transaction.commit();
+        transaction.commitNow();
+        onClickAddMember(v);
     }
 
+    /** This method adds new field (receiver object) */
     public void onClickAddMember(View v) {
-        numberOfMembers++;
-        transaction = manager.beginTransaction();
-        transaction.add(R.id.mainContainer, new ReceiverInfoFragment());
-        transaction.commit();
+        if (numberOfMembers == 0) {
+            receiversArray = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                numberOfMembers++;
+                createReceiver();
+            }
+            ListView lv = (ListView) findViewById(R.id.list);
+            adapter = new CustomListAdapter(this, receiversArray);
+            lv.setAdapter(adapter);
+        } else {
+            numberOfMembers++;
+            createReceiver();
+            adapter.notifyDataSetChanged();
+        }
     }
 
-    /*public void sendEmail(View v) {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"serega4sa@yandex.ru"});
-        i.putExtra(Intent.EXTRA_SUBJECT, "Your Secret Santa");
-        i.putExtra(Intent.EXTRA_TEXT   , "Your Secret Santa is Dima");
-        try {
-            startActivity(i);
-            //startActivity(Intent.createChooser(i, "Send mail..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-        }
-    }*/
+    /** This method collects all data from fields and switches to the next page. Launches additional thread to show progress bar */
+    public void onClickNext(View v) {
+        saveInputData();
 
-    public void onSendButton(View v) {
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, processingFragment, ProcessingFragment.TAG);
+        transaction.commitNow();
+
+        /** Initialize all fragments on current view */
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+        imgReturnArrow = (ImageView) findViewById(R.id.imgReturnArrow);
+        imgDeer = (ImageView) findViewById(R.id.imgDeer);
+        statusOfProcessing = (TextView) findViewById(R.id.statusOfProcessing);
+        returnBtn = (Button) findViewById(R.id.returnBtn);
+
         new MyProgressAsyncTask().execute();
     }
 
+    /** This method returns to the start page */
+    public void onClickReturn(View v) {
+        numberOfMembers = 0;
+        transaction = manager.beginTransaction();
+        transaction.replace(R.id.container, new StartFragment()).addToBackStack("start fragment");
+        transaction.commit();
+    }
+
+    /** This method launches app and shows first page */
+    private void initFragmentStart() {
+        transaction = manager.beginTransaction();
+        transaction.add(R.id.container, new StartFragment()).addToBackStack("start fragment");
+        transaction.commit();
+    }
+
+    /** This method creates new receiver object*/
+    private void createReceiver() {
+        ReceiverInfo receiverInfo = new ReceiverInfo();
+        receiverInfo.setNumber(numberOfMembers);
+        receiversArray.add(receiverInfo);
+    }
+
+    /** Fill receiver objects information with data from fields */
+    public void saveInputData() {
+        for (ReceiverInfo item : receiversArray) {
+            item.setName(item.getHolder().name.getText().toString());
+            item.setEmail(item.getHolder().email.getText().toString());
+        }
+    }
+
+    /** This method shows progress bar and does data processing and mails sending in background */
     class MyProgressAsyncTask extends AsyncTask<Void, Integer, Void> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //progressBar.setVisibility(View.VISIBLE);
-            Toast.makeText(MainActivity.this, "Beginning of the process", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.VISIBLE);
+            //Toast.makeText(MainActivity.this, "Beginning of the process", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            //imgDone.setVisibility(View.VISIBLE);
-            Toast.makeText(MainActivity.this, "Process successfully finished", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            imgDeer.setVisibility(View.VISIBLE);
+            imgReturnArrow.setVisibility(View.VISIBLE);
+            returnBtn.setVisibility(View.VISIBLE);
+            statusOfProcessing.setText("Congrats!!! \n\nAll is done. \n\nIt's high time to look for cool presents for your \nSecret Santa =)");
+            //Toast.makeText(MainActivity.this, "Process successfully finished", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            //progressBar.setProgress(values[0]);
-            //txtState.setText(values[0] + " %");
+            progressBar.setProgress(values[0]);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            /*while (progressBarValue < 100) {
-                progressBarValue++;
-                publishProgress(progressBarValue);
-                SystemClock.sleep(200);
-            }*/
-
+            /** Randomizing executes very fast. It's imitation that it takes some time */
             try {
-                sendEmail();
-            } catch (MessagingException e) {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
+            /** Start randomizer */
+            Randomizer random = new Randomizer(receiversArray);
+            random.run();
+
+           /*StringBuilder sb = new StringBuilder();
+
+            for (Map.Entry<ReceiverInfo, ReceiverInfo> item : random.getResults().entrySet()) {
+                sb.append(item.getKey().getName() + " (" + item.getKey().getEmail() + ")" + " your Secret Santa is " + item.getValue().getName() + " (" + item.getValue().getEmail() + ")\n");
+            }
+
+            test.setText(sb.toString());
+
+            try {
+                //sendEmail();
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }*/
 
             return null;
         }
 
-        public void sendEmail() throws MessagingException {
+        /** This method performs sending of results to users - don't work silently (needs users help - solution not for us).
+         * Alternative way - build client-server architecture, where data from phone will be send to server. Server will send emails */
+        /*public void sendEmail() throws MessagingException {
             Log.i("check","start");
 
             String host = "smtp.gmail.com";
@@ -169,6 +221,6 @@ public class MainActivity extends FragmentActivity {
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
             Log.i("check","sent");
-        }
+        }*/
     }
 }

@@ -18,14 +18,38 @@
         <RelativeLayout
                 android:id="@+id/topContainer"
                 android:layout_width="match_parent"
-                android:layout_height="50dp" />
+                android:layout_height="50dp">
 
-        <FrameLayout
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Please, enter members info"
+                    android:id="@+id/txtInfo"
+                    android:layout_centerVertical="true"
+                    android:textColor="#000"
+                    android:gravity="fill_vertical|center_horizontal"
+                    android:layout_margin="10dp"
+                    android:fontFamily="cursive"
+                    android:textSize="20sp"
+                    android:textStyle="normal|bold"/>
+        </RelativeLayout>
+
+        <!--<FrameLayout
                 android:id="@+id/mainContainer"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_below="@+id/topContainer"
-                android:layout_above="@+id/bottomContainer"/>
+                android:layout_above="@+id/bottomContainer"/>-->
+        <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_margin="10dp"
+                android:layout_below="@+id/topContainer"
+                android:layout_above="@+id/bottomContainer"
+                android:dividerHeight="10dp">
+        </ListView>
 
         <RelativeLayout
                 android:id="@+id/bottomContainer"
@@ -58,7 +82,8 @@
                     android:layout_toEndOf="@+id/btnAddMember"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
-                    android:textColor="#696969"/>
+                    android:textColor="#696969"
+                    />
 
             <Button
                     android:layout_width="wrap_content"
@@ -71,7 +96,8 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/rounded_rectangle_button"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff"
+                    android:onClick="onClickNext"/>
 
         </RelativeLayout>
 
