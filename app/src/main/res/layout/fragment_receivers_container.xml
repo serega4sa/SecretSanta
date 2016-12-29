@@ -2,105 +2,107 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"> <!--Just for designing. Should be removed-->
+
+        <RelativeLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bgr_main"> <!--Just for designing. Should be removed-->
-
-    <RelativeLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_margin="10dp"
-            android:background="@drawable/rounded_rectangle">
-
-        <RelativeLayout
-                android:id="@+id/topContainer"
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Please, enter members info"
-                    android:id="@+id/txtInfo"
-                    android:layout_centerVertical="true"
-                    android:textColor="#000"
-                    android:gravity="fill_vertical|center_horizontal"
-                    android:layout_margin="10dp"
-                    android:fontFamily="cursive"
-                    android:textSize="20sp"
-                    android:textStyle="normal|bold"/>
-        </RelativeLayout>
-
-        <!--<FrameLayout
-                android:id="@+id/mainContainer"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_below="@+id/topContainer"
-                android:layout_above="@+id/bottomContainer"/>-->
-        <ListView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_margin="10dp"
-                android:layout_below="@+id/topContainer"
-                android:layout_above="@+id/bottomContainer"
-                android:dividerHeight="10dp">
-        </ListView>
+                android:background="@drawable/rounded_rectangle">
+            
+            <RelativeLayout
+                    android:id="@+id/topContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
 
-        <RelativeLayout
-                android:id="@+id/bottomContainer"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Please, enter members info"
+                        android:id="@+id/txtInfo"
+                        android:layout_centerVertical="true"
+                        android:textColor="#000"
+                        android:gravity="fill_vertical|center_horizontal"
+                        android:layout_margin="10dp"
+                        android:fontFamily="cursive"
+                        android:textSize="20sp"
+                        android:textStyle="normal|bold"/>
+            </RelativeLayout>
 
-            <Button
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:text="+"
-                    android:id="@+id/btnAddMember"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/round_button"
-                    android:textColor="#ffffff"
-                    android:onClick="onClickAddMember"/>
+            <!--<FrameLayout
+                    android:id="@+id/mainContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_below="@+id/topContainer"
+                    android:layout_above="@+id/bottomContainer"/>-->
+            <ListView
+                    android:id="@+id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_margin="10dp"
+                    android:layout_below="@+id/topContainer"
+                    android:layout_above="@+id/bottomContainer"
+                    android:dividerHeight="10dp"
+                    android:descendantFocusability="afterDescendants">
+                    <!--android:transcriptMode="alwaysScroll"-->
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Add new member"
-                    android:id="@+id/txtAddMember"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/btnAddMember"
-                    android:layout_toEndOf="@+id/btnAddMember"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:textColor="#696969"
-                    />
+            </ListView>
 
-            <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Next"
-                    android:id="@+id/btnNext"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/rounded_rectangle_button"
-                    android:textColor="#ffffff"
-                    android:onClick="onClickNext"/>
+            <RelativeLayout
+                    android:id="@+id/bottomContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true">
+
+                <Button
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:text="+"
+                        android:id="@+id/btnAddMember"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/round_button"
+                        android:textColor="#ffffff"
+                        android:onClick="onClickAddMember"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Add new member"
+                        android:id="@+id/txtAddMember"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/btnAddMember"
+                        android:layout_toEndOf="@+id/btnAddMember"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
+                        android:textColor="#696969"
+                        />
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Next"
+                        android:id="@+id/btnNext"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/rounded_rectangle_button"
+                        android:textColor="#ffffff"
+                        android:onClick="onClickNext"/>
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
-    </RelativeLayout>
 
 </RelativeLayout>

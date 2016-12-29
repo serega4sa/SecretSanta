@@ -1,9 +1,11 @@
 package com.sergeychmihun.secretsanta.activity;
 
+import java.io.Serializable;
+
 /**
  * Created by Sergey.Chmihun on 12/23/2016.
  */
-public class ReceiverInfo {
+public class ReceiverInfo implements Serializable{
     private String name;
     private String email;
     private int number;

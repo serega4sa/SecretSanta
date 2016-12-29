@@ -51,7 +51,6 @@ public class CustomListAdapter extends BaseAdapter{
 
             /** Save holder into receiver object to get access to input fields later */
             getMember(position).setHolder(holder);
-
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
