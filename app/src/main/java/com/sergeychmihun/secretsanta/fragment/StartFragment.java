@@ -17,17 +17,4 @@ public class StartFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_start, container, false);
     }
-
-    /*@Override
-    public void onStart() {
-        super.onStart();
-        Button button = (Button) getActivity().findViewById(R.id.btnStart);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transaction.replace(R.id.container, null, null);
-                transaction.commit();
-            }
-        });
-    }*/
 }

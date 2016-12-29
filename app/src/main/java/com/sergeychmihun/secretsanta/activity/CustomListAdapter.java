@@ -13,12 +13,13 @@ import java.util.ArrayList;
 
 /**
  * Created by Sergey.Chmihun on 12/23/2016.
+ * Custom list adapter which allows to add objects (full fragment_receiver) to list view
  */
 public class CustomListAdapter extends BaseAdapter{
     private ArrayList<ReceiverInfo> listData;
     private LayoutInflater layoutInflater;
 
-    public CustomListAdapter(Context aContext, ArrayList<ReceiverInfo> listData) {
+    CustomListAdapter(Context aContext, ArrayList<ReceiverInfo> listData) {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
     }
@@ -49,7 +50,7 @@ public class CustomListAdapter extends BaseAdapter{
             holder.membNum = (TextView) convertView.findViewById(R.id.membNum);
             holder.membNum.setText(String.valueOf(getMember(position).getNumber()));
 
-            /** Save holder into receiver object to get access to input fields later */
+            /* Save holder into receiver object to get access to input fields later */
             getMember(position).setHolder(holder);
             convertView.setTag(holder);
         } else {
@@ -65,7 +66,7 @@ public class CustomListAdapter extends BaseAdapter{
         TextView membNum;
     }
 
-    ReceiverInfo getMember(int position) {
+    private ReceiverInfo getMember(int position) {
         return ((ReceiverInfo) getItem(position));
     }
 }

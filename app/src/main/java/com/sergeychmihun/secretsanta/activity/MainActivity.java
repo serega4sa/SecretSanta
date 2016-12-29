@@ -8,7 +8,6 @@ import android.graphics.drawable.shapes.RectShape;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,12 +18,13 @@ import com.sergeychmihun.secretsanta.fragment.ProcessingFragment;
 import com.sergeychmihun.secretsanta.fragment.ReceiversInfoContainerFragment;
 import com.sergeychmihun.secretsanta.fragment.StartFragment;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class MainActivity extends FragmentActivity {
 
@@ -36,14 +36,9 @@ public class MainActivity extends FragmentActivity {
     private ImageView imgReturnArrow;
     private Button returnBtn;
     private ProgressBar progressBar;
-    private TextView txtInfo;
-    private ListView list;
+    //private ListView list;
     private TextView statusOfProcessing;
     private int numberOfMembers = 0;
-
-    public ArrayList<ReceiverInfo> getReceiversArray() {
-        return receiversArray;
-    }
 
     private ArrayList<ReceiverInfo> receiversArray;
     private CustomListAdapter adapter;
@@ -63,11 +58,13 @@ public class MainActivity extends FragmentActivity {
     /** This method perform switching to next page after clicking on the 'Start' button. By default creates 3 receiver objects (minimum requirement)*/
     public void onClickButtonStart(View v) {
         transaction = getSupportFragmentManager().beginTransaction();
-        //transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);  /* Animation of fragment. Doesn't work on API <21 */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);  /* Animation of fragment. Doesn't work on API <21 */
+        }
         transaction.replace(R.id.container, receiversContainerFragment, ReceiversInfoContainerFragment.TAG);
         transaction.commitNow();
 
-        list = (ListView) findViewById(R.id.list);
+        //list = (ListView) findViewById(R.id.list);   needed for feature that scrolls list down after adding new item
 
         onClickAddMember(v);
     }
@@ -92,7 +89,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     /** This method collects all data from fields and switches to the next page. Launches additional thread to show progress bar */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void onClickNext(View v) {
         if (checkInputData()) {
             saveInputData();
@@ -101,7 +97,7 @@ public class MainActivity extends FragmentActivity {
             transaction.replace(R.id.container, processingFragment, ProcessingFragment.TAG);
             transaction.commitNow();
 
-            /** Initialize all fragments on current view */
+            /* Initialize all fragments on current view */
             progressBar = (ProgressBar) findViewById(R.id.progressBar);
             progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
             imgReturnArrow = (ImageView) findViewById(R.id.imgReturnArrow);
@@ -111,8 +107,8 @@ public class MainActivity extends FragmentActivity {
 
             new MyProgressAsyncTask().execute();
         } else {
-            txtInfo = (TextView) findViewById(R.id.txtInfo);
-            txtInfo.setText("Please, fill all fields");
+            TextView txtInfo = (TextView) findViewById(R.id.txtInfo);
+            txtInfo.setText(getString(R.string.empty_fields));
             txtInfo.setTextColor(Color.RED);
         }
     }
@@ -140,25 +136,27 @@ public class MainActivity extends FragmentActivity {
     }
 
     /** Check that all fields are filled */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkInputData() {
+    private boolean checkInputData() {
         int counter = 0;
 
         for (ReceiverInfo item : receiversArray) {
             if (item.getHolder().name.getText().toString().equals("")) {
-                item.getHolder().name.setBackground(shapeCreator());
-            } else if (item.getHolder().email.getText().toString().equals("")) {
-                item.getHolder().email.setBackground(shapeCreator());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    item.getHolder().name.setBackground(shapeCreator());
+                }
+            } if (item.getHolder().email.getText().toString().equals("")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    item.getHolder().email.setBackground(shapeCreator());
+                }
             } else
                 counter++;
         }
 
-        if (counter == receiversArray.size()) return true;
-        else return false;
+        return counter == receiversArray.size();
     }
 
     /** Fill receiver objects information with data from fields */
-    public void saveInputData() {
+    private void saveInputData() {
         for (ReceiverInfo item : receiversArray) {
             item.setName(item.getHolder().name.getText().toString());
             item.setEmail(item.getHolder().email.getText().toString());
@@ -166,8 +164,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     /** Creating border shape for NOT filled fields */
-    public ShapeDrawable shapeCreator() {
-        // Create a border programmatically
+    private ShapeDrawable shapeCreator() {
+        /* Create a border programmatically */
         ShapeDrawable shape = new ShapeDrawable(new RectShape());
         shape.getPaint().setColor(Color.GREEN);
         shape.getPaint().setStyle(Paint.Style.STROKE);
@@ -192,7 +190,7 @@ public class MainActivity extends FragmentActivity {
             imgDeer.setVisibility(View.VISIBLE);
             imgReturnArrow.setVisibility(View.VISIBLE);
             returnBtn.setVisibility(View.VISIBLE);
-            statusOfProcessing.setText("Congrats!!! \n\nAll is done. \n\nIt's high time to look for cool presents for your \nSecret Santa =)");
+            statusOfProcessing.setText(getString(R.string.congrats));
         }
 
         @Override
@@ -203,44 +201,32 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            /** Randomizing executes very fast. It's imitation that it takes some time */
             try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                int serverPort = 7777;
+                String serverIP = "213.110.133.187";
+                InetAddress ipAddress = InetAddress.getByName(serverIP);
 
-            /** Start randomizer */
-            Randomizer random = new Randomizer(receiversArray);
-            random.run();
-
-            int serverPort = 7777;
-            String address = "213.110.133.187";
-
-            try {
-                InetAddress ipAddress = InetAddress.getByName(address);
                 Socket socket = new Socket(ipAddress, serverPort);
 
                 InputStream inStr = socket.getInputStream();
-                OutputStream outStr = socket.getOutputStream();
+                ObjectOutputStream outStr = new ObjectOutputStream(socket.getOutputStream());
 
                 DataInputStream in = new DataInputStream(inStr);
-                DataOutputStream out = new DataOutputStream(outStr);
 
-                for (Map.Entry<ReceiverInfo, ReceiverInfo> item : random.getResults().entrySet()) {
-                    String str = item.getKey().getName() + " (" + item.getKey().getEmail() + ")" + " your Secret Santa is " + item.getValue().getName() + " (" + item.getValue().getEmail() + ")";
-                    out.writeUTF(str);
-                    out.flush();
-                    while (true) {
-                        if (in.readUTF().equals("OK")) break;
-                    }
+                /* Send our array with receivers info until server approve receiving */
+                while (true) {
+                    outStr.writeObject(receiversArray);
+                    outStr.flush();
+                    if (in.readUTF().equals("OK"))  break;
                 }
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
+
+                /* Wait for answer from server that emails are sent successfully */
+                while (true) {
+                    if (in.readUTF().equals("SUCCESSFUL")) break;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
 
             return null;
         }

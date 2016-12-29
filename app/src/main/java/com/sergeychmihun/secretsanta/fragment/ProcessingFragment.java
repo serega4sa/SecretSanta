@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.sergeychmihun.secretsanta.R;
 
-/**
- * Created by Sergey.Chmihun on 12/26/2016.
- */
 public class ProcessingFragment extends Fragment{
 
     public final static String TAG = "ProcessingFragment";

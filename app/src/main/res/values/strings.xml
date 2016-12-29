@@ -2,4 +2,18 @@
     <string name="app_name">Secret Santa</string>
     <string name="btn_start">Start</string>
     <string name="img_logo">logo</string>
+    <string name="enter_members_info">Please, enter members info</string>
+    <string name="plus_btn">+</string>
+    <string name="add_new_member">Add new member</string>
+    <string name="next_btn">Next</string>
+    <string name="return_to_start">Return to start</string>
+    <string name="almost_done">Almost done! \n\nPlease, wait a few seconds until results be ready</string>
+    <string name="deer">deer</string>
+    <string name="member_name">Member name:</string>
+    <string name="hint_name">Alex</string>
+    <string name="member_email">Member e-mail:</string>
+    <string name="hint_email">alex@example.com</string>
+    <string name="memb_number_example">1</string>
+    <string name="congrats">Congrats!!! \n\nAll is done. \n\nIt\'s high time to look for cool presents for your \nSecret Santa =)</string>
+    <string name="empty_fields">Please, fill all fields</string>
 </resources>

@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bgr_main"
-        tools:context=".activity.MainActivity"
-        >
-
-    <!--<fragment
-            android:id="@+id/start"
-            android:name="com.sergeychmihun.secretsanta.fragment.StartFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_start"/>-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bgr_main"
+                tools:context=".activity.MainActivity">
 
     <LinearLayout
             android:id="@+id/container"

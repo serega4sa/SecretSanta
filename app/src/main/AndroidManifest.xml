@@ -10,7 +10,7 @@
             android:theme="@style/MyTheme">
         <activity android:name=".activity.MainActivity"
                   android:screenOrientation="portrait"
-                  android:windowSoftInputMode="adjustResize"
+
                   android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
