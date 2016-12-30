@@ -39,6 +39,7 @@ public class MainActivity extends FragmentActivity {
     //private ListView list;
     private TextView statusOfProcessing;
     private int numberOfMembers = 0;
+    private boolean isOK = true;
 
     private ArrayList<ReceiverInfo> receiversArray;
     private CustomListAdapter adapter;
@@ -190,7 +191,11 @@ public class MainActivity extends FragmentActivity {
             imgDeer.setVisibility(View.VISIBLE);
             imgReturnArrow.setVisibility(View.VISIBLE);
             returnBtn.setVisibility(View.VISIBLE);
-            statusOfProcessing.setText(getString(R.string.congrats));
+            if (isOK) {
+                statusOfProcessing.setText(getString(R.string.congrats));
+            } else {
+                statusOfProcessing.setText(getString(R.string.failed));
+            }
         }
 
         @Override
@@ -203,7 +208,8 @@ public class MainActivity extends FragmentActivity {
         protected Void doInBackground(Void... voids) {
             try {
                 int serverPort = 7777;
-                String serverIP = "213.110.133.187";
+                //String serverIP = "213.110.133.187";  home IP
+                String serverIP = "10.0.10.73";
                 InetAddress ipAddress = InetAddress.getByName(serverIP);
 
                 Socket socket = new Socket(ipAddress, serverPort);
@@ -217,12 +223,18 @@ public class MainActivity extends FragmentActivity {
                 while (true) {
                     outStr.writeObject(receiversArray);
                     outStr.flush();
-                    if (in.readUTF().equals("OK"))  break;
+                    if (in.readUTF().equals("OK")) break;
                 }
 
                 /* Wait for answer from server that emails are sent successfully */
                 while (true) {
-                    if (in.readUTF().equals("SUCCESSFUL")) break;
+                    String answer = in.readUTF();
+                    if (answer.equals("SUCCESSFUL")) {
+                        break;
+                    } else if (answer.equals("FAILED")) {
+                        isOK = false;
+                        break;
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();

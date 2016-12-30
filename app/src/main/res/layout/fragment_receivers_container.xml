@@ -19,7 +19,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
-                <TextView
+                <com.sergeychmihun.secretsanta.activity.MyTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textAppearance="?android:attr/textAppearanceMedium"

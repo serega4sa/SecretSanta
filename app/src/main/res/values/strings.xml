@@ -16,4 +16,5 @@
     <string name="memb_number_example">1</string>
     <string name="congrats">Congrats!!! \n\nAll is done. \n\nIt\'s high time to look for cool presents for your \nSecret Santa =)</string>
     <string name="empty_fields">Please, fill all fields</string>
+    <string name="failed">Something went wrong =( \n\nPlease, contact administrator</string>
 </resources>
